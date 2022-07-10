@@ -2,4 +2,11 @@
     <string name="app_name">PerFit</string>
     <string name="fitness">Fitness</string>
     <string name="history">History</string>
+    <string name="select">SELECT</string>
+    <string name="start">START</string>
+    <string name="upload">UPLOAD</string>
+    <string name="select_mode">Please select your fitness action</string>
+    <string name="then">Then</string>
+    <string name="or">OR</string>
+    <string name="record">Record</string>
 </resources>
