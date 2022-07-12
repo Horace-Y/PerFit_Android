@@ -42,10 +42,10 @@
             android:id="@+id/button_upload_video"
             android:layout_width="180dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="12dp"
             android:text="@string/upload"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/text_max_length"
             app:layout_constraintEnd_toEndOf="@+id/button_start_recording"
             app:layout_constraintStart_toStartOf="@+id/button_start_recording" />
 
@@ -58,6 +58,7 @@
             android:layout_marginEnd="16dp"
             android:text="@string/select_mode"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -69,6 +70,7 @@
             android:layout_marginBottom="32dp"
             android:text="@string/then"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/button_start_recording"
             app:layout_constraintEnd_toEndOf="@+id/button_start_recording"
             app:layout_constraintStart_toStartOf="@+id/button_start_recording" />
@@ -80,8 +82,19 @@
             android:layout_marginBottom="16dp"
             android:text="@string/or"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/button_upload_video"
             app:layout_constraintEnd_toEndOf="@+id/button_start_recording"
+            app:layout_constraintStart_toStartOf="@+id/button_start_recording" />
+
+        <TextView
+            android:id="@+id/text_max_length"
+            android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/max_length_supported"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/button_upload_video"
             app:layout_constraintStart_toStartOf="@+id/button_start_recording" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

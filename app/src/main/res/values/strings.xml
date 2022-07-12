@@ -9,4 +9,6 @@
     <string name="then">Then</string>
     <string name="or">OR</string>
     <string name="record">Record</string>
+    <string name="max_length_supported">(The maximum video length supported is 30 seconds)</string>
+    <string name="loading">Loading ...</string>
 </resources>
