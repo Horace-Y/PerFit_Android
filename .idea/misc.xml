@@ -5,11 +5,13 @@
       <map>
         <entry key="../../../layout/custom_preview.xml" value="0.14088729016786572" />
         <entry key="app/src/main/res/drawable-anydpi/ic_fitness.xml" value="0.235" />
+        <entry key="app/src/main/res/layout/activity_fitness_result.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/bottom_nav_menu.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/layout/fragment_fitness_history.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_new_fitness.xml" value="0.281689453125" />
-        <entry key="app/src/main/res/layout/fragment_processing_dialog.xml" value="0.2984375" />
+        <entry key="app/src/main/res/layout/fragment_fitness_result.xml" value="0.11" />
+        <entry key="app/src/main/res/layout/fragment_new_fitness.xml" value="0.18449682683590207" />
+        <entry key="app/src/main/res/layout/fragment_processing_dialog.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_recording_preview.xml" value="0.22893981933593752" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24" />

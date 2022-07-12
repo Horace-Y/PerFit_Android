@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
     app:startDestination="@id/newFitnessFragment">
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.example.perfit.ui.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
     <fragment
         android:id="@+id/newFitnessFragment"
         android:name="com.example.perfit.ui.fragments.NewFitnessFragment"
-        android:label="PerFit">
+        android:label="PerFit"
+        tools:layout="@layout/fragment_new_fitness">
         <action
-            android:id="@+id/action_newFitnessFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_newFitnessFragment_to_fitnessResultActivity"
+            app:destination="@id/fitnessResultActivity" />
     </fragment>
+    <activity
+        android:id="@+id/fitnessResultActivity"
+        android:name="com.example.perfit.ui.FitnessResultActivity"
+        android:label="Fitness Feedback"
+        tools:layout="@layout/activity_fitness_result">
+    </activity>
 </navigation>
