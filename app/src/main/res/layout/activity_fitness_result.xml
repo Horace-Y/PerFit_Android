@@ -49,14 +49,21 @@
         app:layout_constraintStart_toStartOf="@+id/text_header"
         app:layout_constraintTop_toBottomOf="@+id/text_header" />
 
-    <VideoView
-        android:id="@+id/video_feedback"
-        android:layout_width="300dp"
-        android:layout_height="400dp"
-        android:layout_marginBottom="48dp"
+    <FrameLayout
+        android:id="@+id/frame_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <VideoView
+            android:id="@+id/video_feedback"
+            android:layout_width="360dp"
+            android:layout_height="480dp" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/text_feedback"
@@ -65,8 +72,8 @@
         android:layout_marginBottom="16dp"
         android:text="@string/motion_feedback"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/video_feedback"
-        app:layout_constraintEnd_toEndOf="@+id/video_feedback"
-        app:layout_constraintStart_toStartOf="@+id/video_feedback" />
+        app:layout_constraintBottom_toTopOf="@+id/frame_video"
+        app:layout_constraintEnd_toEndOf="@+id/frame_video"
+        app:layout_constraintStart_toStartOf="@+id/frame_video" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

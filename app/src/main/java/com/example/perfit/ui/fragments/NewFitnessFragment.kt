@@ -7,20 +7,26 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.perfit.BuildConfig
 import com.example.perfit.R
 import com.example.perfit.databinding.FragmentNewFitnessBinding
 import com.example.perfit.databinding.FragmentProcessingDialogBinding
 import com.example.perfit.utils.Constants.Companion.RECORDING_DURATION_LIMIT
 import com.example.perfit.viewModels.MainViewModel
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class NewFitnessFragment : Fragment() {
@@ -32,6 +38,7 @@ class NewFitnessFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var uploadLauncher: ActivityResultLauncher<Intent>
+    private lateinit var alertDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +46,10 @@ class NewFitnessFragment : Fragment() {
 
         // intent activity launchers
         recordLauncher = registerForActivityResult(StartActivityForResult()) { result ->
-            val intent: Intent? = result.data
             if (result.resultCode == RESULT_OK) {
+                val intent: Intent? = result.data
                 uploadVideo(intent?.data)
             }
-            uploadVideo(intent?.data) // TODO: only for testing
         }
         uploadLauncher = registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -55,9 +61,9 @@ class NewFitnessFragment : Fragment() {
                     release()
                 }
                 if (duration == null){
-                    Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_LONG)
-                } else if (duration!! / 1000 > RECORDING_DURATION_LIMIT){
-                    Toast.makeText(context, "Video length cannot exceed 30 seconds", Toast.LENGTH_LONG)
+                    Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_LONG).show()
+                } else if ((duration!!/1000) > RECORDING_DURATION_LIMIT){
+                    Toast.makeText(context, "Video length cannot exceed 30 seconds", Toast.LENGTH_LONG).show()
                 } else {
                     uploadVideo(intent?.data)
                 }
@@ -72,7 +78,12 @@ class NewFitnessFragment : Fragment() {
         binding.mainViewModel = mainViewModel
         _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
 
+        // loading dialog & spinner
         dialogBinding.progressBar.isIndeterminate = false
+        alertDialog = AlertDialog.Builder(context).apply {
+            setCancelable(false)
+            setView(dialogBinding.root)
+        }.create()
 
         // onClick listeners
         binding.buttonStartRecording.setOnClickListener { startVideoRecording() }
@@ -88,10 +99,16 @@ class NewFitnessFragment : Fragment() {
     }
 
     private fun startVideoRecording(){
-//        val outputPath = RECORDING_OUTPUT_PATH + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()) + ".mp4"
+        // TODO: add custom output path and name
+//        val outputPath = File(Environment.getExternalStorageDirectory().toString() + "/" + R.string.app_name).apply { mkdirs() }
+//        val outputFile = File.createTempFile("PerFit_recording_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()),
+//            ".mp4", outputPath)
+//        val outputUri = FileProvider.getUriForFile(context!!,
+//            BuildConfig.APPLICATION_ID + ".provider",
+//            outputFile)
         recordLauncher.launch(Intent(MediaStore.ACTION_VIDEO_CAPTURE).apply {
             putExtra(MediaStore.EXTRA_DURATION_LIMIT, RECORDING_DURATION_LIMIT)
-//            putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(outputPath)))
+//            putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
         })
     }
 
@@ -103,31 +120,29 @@ class NewFitnessFragment : Fragment() {
 
     private fun uploadVideo(videoUri: Uri?){
         if (videoUri == null){
-            Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_LONG)
+            Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_LONG).show()
+            return
         }
         // show processing dialog
-        val alertDialog = AlertDialog.Builder(context).apply {
-                setCancelable(false)
-                setView(dialogBinding.root)
-            }.create().apply { show() }
-
-        val window: Window? = alertDialog.window
-        WindowManager.LayoutParams().also {
-            it.copyFrom(alertDialog.window?.attributes)
-            it.width = LinearLayout.LayoutParams.WRAP_CONTENT
-            it.height = LinearLayout.LayoutParams.WRAP_CONTENT
-            alertDialog.window?.attributes = it
-        }
-        window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        alertDialog.show()
 
         // TODO: handle network communication
-//        Thread.sleep(10000)
+
+        // TODO: only for demo purpose
+        object : CountDownTimer(5000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                alertDialog.dismiss()
+                findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
+            }
+        }.start()
 
         // dismiss processing dialog
-        window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        alertDialog.dismiss()
+//        alertDialog.dismiss()
 
-        findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
+        // navigate to feedback activity
+//        findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
     }
 
 

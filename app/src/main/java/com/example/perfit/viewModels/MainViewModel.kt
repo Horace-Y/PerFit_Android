@@ -4,14 +4,19 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import androidx.lifecycle.*
+import com.example.perfit.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     application: Application
 ): AndroidViewModel(application){
+
+    var videoUri: Uri? = null
 
     private fun hasInternetConnection(): Boolean{
         val connectivityManager = getApplication<Application>().getSystemService(
