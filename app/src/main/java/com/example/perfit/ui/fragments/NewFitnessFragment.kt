@@ -53,6 +53,8 @@ class NewFitnessFragment : Fragment() {
         binding.mainViewModel = mainViewModel
         _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
 
+        binding.textSelectedAction.text = selectedAction?: ""
+
         // loading dialog & spinner
         dialogBinding.progressBar.isIndeterminate = false
         alertDialog = AlertDialog.Builder(context).apply {
@@ -101,9 +103,9 @@ class NewFitnessFragment : Fragment() {
                     release()
                 }
                 if (duration == null){
-                    Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
                 } else if ((duration!!/1000) > RECORDING_DURATION_LIMIT){
-                    Toast.makeText(context, "Video length cannot exceed 30 seconds", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Video length cannot exceed 30 seconds", Toast.LENGTH_SHORT).show()
                 } else {
                     uploadVideo(intent?.data)
                 }
@@ -117,7 +119,7 @@ class NewFitnessFragment : Fragment() {
 
     private fun startVideoRecording(){
         if (selectedAction == null){
-            Toast.makeText(context, "Please select an action first", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Please select an action first", Toast.LENGTH_SHORT).show()
             return
         }
         // TODO: add custom output path and name
@@ -135,7 +137,7 @@ class NewFitnessFragment : Fragment() {
 
     private fun selectLocalVideo(){
         if (selectedAction == null){
-            Toast.makeText(context, "Please select an action first", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Please select an action first", Toast.LENGTH_SHORT).show()
             return
         }
         uploadLauncher.launch(Intent(Intent.ACTION_PICK).apply {
@@ -145,7 +147,7 @@ class NewFitnessFragment : Fragment() {
 
     private fun uploadVideo(videoUri: Uri?){
         if (videoUri == null){
-            Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
             return
         }
         // show processing dialog
