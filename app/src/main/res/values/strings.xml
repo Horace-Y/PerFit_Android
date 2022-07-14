@@ -14,4 +14,8 @@
     <string name="correctness_score_header">Your correctness score is</string>
     <string name="correctness_score">100</string>
     <string name="motion_feedback">Please checkout your motion feedback</string>
+    <string name="action">Action:</string>
+    <string name="difficulty">Difficulty:</string>
+    <string name="description">Description:</string>
+    <string name="view_demo">View Demo</string>
 </resources>

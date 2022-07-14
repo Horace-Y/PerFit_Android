@@ -64,6 +64,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/text_selected_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/button_mode_selection"
+            app:layout_constraintStart_toStartOf="@+id/button_mode_selection"
+            app:layout_constraintTop_toBottomOf="@+id/button_mode_selection" />
+
+        <TextView
             android:id="@+id/text_then"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,7 +101,7 @@
         <TextView
             android:id="@+id/text_max_length"
             android:layout_width="wrap_content"
-            android:layout_height="19dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="@string/max_length_supported"
             app:layout_constraintBottom_toBottomOf="parent"

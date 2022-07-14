@@ -18,6 +18,14 @@
         <item name="android:statusBarColor">@color/statusBarColor</item>
     </style>
 
+    <style name="FitnessActionSelectionActivityStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/mainBlue</item>
+        <item name="colorPrimaryDark">@color/darkerBlue</item>
+        <item name="colorAccent">@color/skyBlue</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+    </style>
+
     <style name="CustomBottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="backgroundTint">@color/bottomNavBackground</item>
         <item name="itemIconTint">@color/bottom_nav_view_item_color</item>

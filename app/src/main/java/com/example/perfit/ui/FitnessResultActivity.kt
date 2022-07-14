@@ -4,11 +4,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.MediaController
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.perfit.R
 import com.example.perfit.databinding.ActivityFitnessResultBinding
-import com.example.perfit.viewModels.MainViewModel
 
 class FitnessResultActivity : AppCompatActivity() {
 

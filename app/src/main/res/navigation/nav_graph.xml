@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/newFitnessFragment">
+    <fragment
+        android:id="@+id/newFitnessFragment"
+        android:name="com.example.perfit.ui.fragments.NewFitnessFragment"
+        android:label="PerFit"
+        tools:layout="@layout/fragment_new_fitness">
+        <action
+            android:id="@+id/action_newFitnessFragment_to_fitnessResultActivity"
+            app:destination="@id/fitnessResultActivity" />
+        <action
+            android:id="@+id/action_newFitnessFragment_to_fitnessActionSelectionActivity"
+            app:destination="@id/fitnessActionSelectionActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/fitnessResultActivity"
+        android:name="com.example.perfit.ui.FitnessResultActivity"
+        android:label="Fitness Feedback"
+        tools:layout="@layout/activity_fitness_result">
+    </activity>
+    <fragment
+        android:id="@+id/fitnessHistoryFragment"
+        android:name="com.example.perfit.ui.fragments.FitnessHistoryFragment"
+        android:label="PerFit"
+        tools:layout="@layout/fragment_fitness_history" />
+    <activity
+        android:id="@+id/fitnessActionSelectionActivity"
+        android:name="com.example.perfit.ui.FitnessActionSelectionActivity"
+        android:label="activity_action_selection"
+        tools:layout="@layout/activity_action_selection" />
+</navigation>

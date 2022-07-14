@@ -8,34 +8,32 @@ import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.perfit.BuildConfig
 import com.example.perfit.R
 import com.example.perfit.databinding.FragmentNewFitnessBinding
 import com.example.perfit.databinding.FragmentProcessingDialogBinding
+import com.example.perfit.ui.FitnessActionSelectionActivity
 import com.example.perfit.utils.Constants.Companion.RECORDING_DURATION_LIMIT
 import com.example.perfit.viewModels.MainViewModel
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class NewFitnessFragment : Fragment() {
 
     private var _binding: FragmentNewFitnessBinding? = null
     private val binding get() = _binding!!
     private var _dialogBinding: FragmentProcessingDialogBinding? = null
     private val dialogBinding get() = _dialogBinding!!
+    private var selectedAction: String? = null
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var selectLauncher: ActivityResultLauncher<Intent>
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var uploadLauncher: ActivityResultLauncher<Intent>
     private lateinit var alertDialog: AlertDialog
@@ -45,6 +43,48 @@ class NewFitnessFragment : Fragment() {
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         // intent activity launchers
+        setUpIntentLaunchers()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // Inflate the layout for this fragment
+        _binding = FragmentNewFitnessBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.mainViewModel = mainViewModel
+        _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
+
+        // loading dialog & spinner
+        dialogBinding.progressBar.isIndeterminate = false
+        alertDialog = AlertDialog.Builder(context).apply {
+            setCancelable(false)
+            setView(dialogBinding.root)
+        }.create()
+
+        // onClick listeners
+        binding.buttonModeSelection.setOnClickListener { selectFitnessAction() }
+        binding.buttonStartRecording.setOnClickListener { startVideoRecording() }
+        binding.buttonUploadVideo.setOnClickListener { selectLocalVideo() }
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        _dialogBinding = null
+        super.onDestroyView()
+    }
+
+    private fun setUpIntentLaunchers(){
+        selectLauncher = registerForActivityResult(StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val intent: Intent? = result.data
+                val mode = intent?.getStringExtra("Mode")
+                if (mode != null){
+                    selectedAction = "Selected: $mode"
+                    binding.textSelectedAction.text = selectedAction
+                }
+            }
+        }
         recordLauncher = registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val intent: Intent? = result.data
@@ -71,34 +111,15 @@ class NewFitnessFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // Inflate the layout for this fragment
-        _binding = FragmentNewFitnessBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.mainViewModel = mainViewModel
-        _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
-
-        // loading dialog & spinner
-        dialogBinding.progressBar.isIndeterminate = false
-        alertDialog = AlertDialog.Builder(context).apply {
-            setCancelable(false)
-            setView(dialogBinding.root)
-        }.create()
-
-        // onClick listeners
-        binding.buttonStartRecording.setOnClickListener { startVideoRecording() }
-        binding.buttonUploadVideo.setOnClickListener { selectLocalVideo() }
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        _dialogBinding = null
-        super.onDestroyView()
+    private fun selectFitnessAction(){
+        selectLauncher.launch(Intent(activity, FitnessActionSelectionActivity::class.java))
     }
 
     private fun startVideoRecording(){
+        if (selectedAction == null){
+            Toast.makeText(context, "Please select an action first", Toast.LENGTH_LONG).show()
+            return
+        }
         // TODO: add custom output path and name
 //        val outputPath = File(Environment.getExternalStorageDirectory().toString() + "/" + R.string.app_name).apply { mkdirs() }
 //        val outputFile = File.createTempFile("PerFit_recording_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()),
@@ -113,6 +134,10 @@ class NewFitnessFragment : Fragment() {
     }
 
     private fun selectLocalVideo(){
+        if (selectedAction == null){
+            Toast.makeText(context, "Please select an action first", Toast.LENGTH_LONG).show()
+            return
+        }
         uploadLauncher.launch(Intent(Intent.ACTION_PICK).apply {
             type = "video/*"
         })
@@ -127,6 +152,7 @@ class NewFitnessFragment : Fragment() {
         alertDialog.show()
 
         // TODO: handle network communication
+//        sendVideoThroughApi(videoUri)
 
         // TODO: only for demo purpose
         object : CountDownTimer(5000, 1000) {
@@ -144,6 +170,26 @@ class NewFitnessFragment : Fragment() {
         // navigate to feedback activity
 //        findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
     }
+
+//    private fun sendVideoThroughApi(videoUri: Uri){
+//        Log.d("RecipesFragment", "request API data called!!!")
+//        mainViewModel.sendRecording(recipesViewModel.applyQueries())
+//        mainViewModel.recordingResponse.observe(viewLifecycleOwner) { response ->
+//            when (response) {
+//                is NetworkResult.Success -> {
+//                    response.data?.let { mAdapter.setData(it) }
+//                }
+//                is NetworkResult.Error -> {
+////                    loadDataFromCache()
+//                    Toast.makeText(
+//                        requireContext(),
+//                        response.message.toString(),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
+//        }
+//    }
 
 
 }
