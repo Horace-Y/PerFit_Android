@@ -56,8 +56,8 @@ class FitnessResultActivity : AppCompatActivity() {
             Toast.makeText(this, "Server data cannot be processed", Toast.LENGTH_SHORT).show()
             finish()
         }
-        Log.d("Network", "score: " + fitnessResult!!.score)
-        Log.d("Network", "video: " + fitnessResult!!.video)
+        Log.d("result", "score: " + fitnessResult!!.score)
+        Log.d("result", "video: " + fitnessResult!!.video)
         binding.textScore.text = fitnessResult!!.score.toString()
 
         val videoBytes = decode(fitnessResult.video, DEFAULT)

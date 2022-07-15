@@ -29,8 +29,6 @@ import com.example.perfit.utils.Constants.Companion.URI1
 import com.example.perfit.utils.NetworkResult
 import com.example.perfit.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.BufferedInputStream
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -123,7 +121,7 @@ class NewFitnessFragment : Fragment() {
                     uploadVideo(intent?.data)
                 }
             }
-            // TODO: only for demo purpose
+            // TODO: testing only
             uploadVideo(URI1)
         }
     }
@@ -137,16 +135,8 @@ class NewFitnessFragment : Fragment() {
             Toast.makeText(context, "Please select an action first", Toast.LENGTH_SHORT).show()
             return
         }
-        // TODO: add custom output path and name
-//        val outputPath = File(Environment.getExternalStorageDirectory().toString() + "/" + R.string.app_name).apply { mkdirs() }
-//        val outputFile = File.createTempFile("PerFit_recording_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()),
-//            ".mp4", outputPath)
-//        val outputUri = FileProvider.getUriForFile(context!!,
-//            BuildConfig.APPLICATION_ID + ".provider",
-//            outputFile)
         recordLauncher.launch(Intent(MediaStore.ACTION_VIDEO_CAPTURE).apply {
             putExtra(MediaStore.EXTRA_DURATION_LIMIT, RECORDING_DURATION_LIMIT)
-//            putExtra(MediaStore.EXTRA_OUTPUT, outputUri)
         })
     }
 
@@ -169,40 +159,14 @@ class NewFitnessFragment : Fragment() {
         alertDialog.show()
 
         // convert video file to string using base64 encoding
-        var videoData: String
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
-
-        // TODO: only for demo purpose
-        val HCpath = "/Users/haolongyang/PerFit/app/src/main/res/raw/basketball.mp4"
-        File(HCpath).also {
-            ByteArray(it.length().toInt()).also {
-                BufferedInputStream(context?.contentResolver?.openInputStream(videoUri)).apply {
-                    read(it, 0, it.size)
-                    close()
-                }
-                videoData = encodeToString(it, DEFAULT)
-            }
+        val videoInputStream = context?.contentResolver?.openInputStream(videoUri)
+        if (videoInputStream == null){
+            Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
+            return
         }
-//        File(videoUri.path!!).also {
-//            ByteArray(it.length().toInt()).also {
-//                BufferedInputStream(context?.contentResolver?.openInputStream(videoUri)).apply {
-//                    read(it, 0, it.size)
-//                    close()
-//                }
-//                videoData = encodeToString(it, DEFAULT)
-//            }
-//        }
+        val videoData = encodeToString(videoInputStream.readBytes(), DEFAULT)
         sendVideoThroughApi(timestamp, videoData)
-
-        // TODO: only for demo purpose
-//        object : CountDownTimer(5000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-//            }
-//            override fun onFinish() {
-//                alertDialog.dismiss()
-//                findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
-//            }
-//        }.start()
 
         // dismiss processing dialog
         alertDialog.dismiss()
@@ -240,8 +204,7 @@ class NewFitnessFragment : Fragment() {
 
         queries[KEY_ID] = timestamp
         queries[KEY_MODE] = mode
-//        queries[KEY_VIDEO] = video
-        queries[KEY_VIDEO] = "abc"
+        queries[KEY_VIDEO] = video
 
         return queries
     }

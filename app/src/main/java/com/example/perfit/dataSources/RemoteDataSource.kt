@@ -15,8 +15,4 @@ class RemoteDataSource @Inject constructor(
         }
         return fitnessApi.sendRecording(queries)
     }
-
-//    suspend fun getFeedback(searchQuery: Map<String, String>): Response<FitnessResult> {
-//        return fitnessApi.getFeedback(searchQuery)
-//    }
 }

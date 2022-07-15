@@ -22,15 +22,10 @@ class MainViewModel @Inject constructor(
 
     /** RETROFIT */
     val sendRecordingResponse: MutableLiveData<NetworkResult<FitnessResult>> = MutableLiveData()
-//    val getFeedbackResponse: MutableLiveData<NetworkResult<FitnessResult>> = MutableLiveData()
 
     fun sendRecording(queries: Map<String, String>) = viewModelScope.launch {
         sendRecordingToServer(queries)
     }
-
-//    fun receiveFeedback(searchQuery: Map<String, String>) = viewModelScope.launch {
-//        getFeedbackFromServer(searchQuery)
-//    }
 
     private suspend fun sendRecordingToServer(queries: Map<String, String>) {
         sendRecordingResponse.value = NetworkResult.Loading()
