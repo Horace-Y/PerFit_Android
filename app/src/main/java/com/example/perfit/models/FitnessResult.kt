@@ -11,5 +11,5 @@ data class FitnessResult(
     @SerializedName("score")
     val score: Int,
     @SerializedName("video")
-    val video: File,
+    val video: String,
 ): Parcelable

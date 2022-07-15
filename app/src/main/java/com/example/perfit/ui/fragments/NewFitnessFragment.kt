@@ -7,22 +7,33 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.provider.MediaStore
+import android.util.Base64.DEFAULT
+import android.util.Base64.encodeToString
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.example.perfit.R
 import com.example.perfit.databinding.FragmentNewFitnessBinding
 import com.example.perfit.databinding.FragmentProcessingDialogBinding
+import com.example.perfit.models.FitnessResult
 import com.example.perfit.ui.FitnessActionSelectionActivity
+import com.example.perfit.ui.FitnessResultActivity
+import com.example.perfit.utils.Constants.Companion.KEY_ID
+import com.example.perfit.utils.Constants.Companion.KEY_MODE
+import com.example.perfit.utils.Constants.Companion.KEY_VIDEO
 import com.example.perfit.utils.Constants.Companion.RECORDING_DURATION_LIMIT
+import com.example.perfit.utils.Constants.Companion.URI1
+import com.example.perfit.utils.NetworkResult
 import com.example.perfit.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.BufferedInputStream
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 @AndroidEntryPoint
 class NewFitnessFragment : Fragment() {
@@ -37,6 +48,7 @@ class NewFitnessFragment : Fragment() {
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var uploadLauncher: ActivityResultLauncher<Intent>
     private lateinit var alertDialog: AlertDialog
+    private lateinit var fitnessResult: FitnessResult
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +65,9 @@ class NewFitnessFragment : Fragment() {
         binding.mainViewModel = mainViewModel
         _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
 
-        binding.textSelectedAction.text = selectedAction?: ""
+        if (selectedAction != null){
+            binding.textSelectedAction.text = "Selected: $selectedAction"
+        }
 
         // loading dialog & spinner
         dialogBinding.progressBar.isIndeterminate = false
@@ -80,10 +94,9 @@ class NewFitnessFragment : Fragment() {
         selectLauncher = registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val intent: Intent? = result.data
-                val mode = intent?.getStringExtra("Mode")
-                if (mode != null){
-                    selectedAction = "Selected: $mode"
-                    binding.textSelectedAction.text = selectedAction
+                selectedAction = intent?.getStringExtra("Mode")
+                if (selectedAction != null){
+                    binding.textSelectedAction.text = "Selected: $selectedAction"
                 }
             }
         }
@@ -105,11 +118,13 @@ class NewFitnessFragment : Fragment() {
                 if (duration == null){
                     Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
                 } else if ((duration!!/1000) > RECORDING_DURATION_LIMIT){
-                    Toast.makeText(context, "Video length cannot exceed 30 seconds", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Video exceeds the maximum length allowed", Toast.LENGTH_SHORT).show()
                 } else {
                     uploadVideo(intent?.data)
                 }
             }
+            // TODO: only for demo purpose
+            uploadVideo(URI1)
         }
     }
 
@@ -153,45 +168,82 @@ class NewFitnessFragment : Fragment() {
         // show processing dialog
         alertDialog.show()
 
-        // TODO: handle network communication
-//        sendVideoThroughApi(videoUri)
+        // convert video file to string using base64 encoding
+        var videoData: String
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
 
         // TODO: only for demo purpose
-        object : CountDownTimer(5000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
+        val HCpath = "/Users/haolongyang/PerFit/app/src/main/res/raw/basketball.mp4"
+        File(HCpath).also {
+            ByteArray(it.length().toInt()).also {
+                BufferedInputStream(context?.contentResolver?.openInputStream(videoUri)).apply {
+                    read(it, 0, it.size)
+                    close()
+                }
+                videoData = encodeToString(it, DEFAULT)
             }
-            override fun onFinish() {
-                alertDialog.dismiss()
-                findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
-            }
-        }.start()
-
-        // dismiss processing dialog
-//        alertDialog.dismiss()
-
-        // navigate to feedback activity
-//        findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
-    }
-
-//    private fun sendVideoThroughApi(videoUri: Uri){
-//        Log.d("RecipesFragment", "request API data called!!!")
-//        mainViewModel.sendRecording(recipesViewModel.applyQueries())
-//        mainViewModel.recordingResponse.observe(viewLifecycleOwner) { response ->
-//            when (response) {
-//                is NetworkResult.Success -> {
-//                    response.data?.let { mAdapter.setData(it) }
+        }
+//        File(videoUri.path!!).also {
+//            ByteArray(it.length().toInt()).also {
+//                BufferedInputStream(context?.contentResolver?.openInputStream(videoUri)).apply {
+//                    read(it, 0, it.size)
+//                    close()
 //                }
-//                is NetworkResult.Error -> {
-////                    loadDataFromCache()
-//                    Toast.makeText(
-//                        requireContext(),
-//                        response.message.toString(),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
+//                videoData = encodeToString(it, DEFAULT)
 //            }
 //        }
-//    }
+        sendVideoThroughApi(timestamp, videoData)
 
+        // TODO: only for demo purpose
+//        object : CountDownTimer(5000, 1000) {
+//            override fun onTick(millisUntilFinished: Long) {
+//            }
+//            override fun onFinish() {
+//                alertDialog.dismiss()
+//                findNavController().navigate(R.id.action_newFitnessFragment_to_fitnessResultActivity)
+//            }
+//        }.start()
+
+        // dismiss processing dialog
+        alertDialog.dismiss()
+
+        // navigate to feedback activity
+        if (this::fitnessResult.isInitialized){
+            val intent = Intent(activity, FitnessResultActivity::class.java).apply {
+                putExtra("FitnessResults", fitnessResult)
+            }
+            startActivity(intent)
+        }
+    }
+
+    private fun sendVideoThroughApi(timestamp: String, video: String){
+        mainViewModel.sendRecording(applyPostQueries(timestamp, selectedAction!!, video))
+        mainViewModel.sendRecordingResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkResult.Success -> {
+                    fitnessResult = response.data!!
+                }
+                is NetworkResult.Error -> {
+                    Toast.makeText(
+                        requireContext(),
+                        response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun applyPostQueries(timestamp: String, mode: String, video: String): HashMap<String, String> {
+        val queries: HashMap<String, String> = HashMap()
+
+        queries[KEY_ID] = timestamp
+        queries[KEY_MODE] = mode
+//        queries[KEY_VIDEO] = video
+        queries[KEY_VIDEO] = "abc"
+
+        return queries
+    }
 
 }
