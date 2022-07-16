@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.perfit.dataSources.Repository
 import com.example.perfit.models.FitnessResult
@@ -18,36 +19,36 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repository: Repository,
     application: Application
-): AndroidViewModel(application){
+) : AndroidViewModel(application) {
 
     /** RETROFIT */
     val sendRecordingResponse: MutableLiveData<NetworkResult<FitnessResult>> = MutableLiveData()
 
-    fun sendRecording(queries: Map<String, String>) = viewModelScope.launch {
-        sendRecordingToServer(queries)
+    fun sendRecording(data: Map<String, String>) = viewModelScope.launch {
+        sendRecordingToServer(data)
     }
 
-    private suspend fun sendRecordingToServer(queries: Map<String, String>) {
+    private suspend fun sendRecordingToServer(data: Map<String, String>) {
         sendRecordingResponse.value = NetworkResult.Loading()
-        if(hasInternetConnection()){
+        if (hasInternetConnection()) {
             try {
-                val response = repository.remote.sendRecording(queries)
+                val response = repository.remote.sendRecording(data)
                 sendRecordingResponse.value = handleServerResponse(response)
                 // TODO: save the received feedback to local
 //                val responseData = getFeedbackResponse.value!!.data
 //                if(responseData != null){
 //                    offlineCacheResult(responseData)
 //                }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 sendRecordingResponse.value = NetworkResult.Error("Server Response Not Received.")
             }
-        }else{
+        } else {
             sendRecordingResponse.value = NetworkResult.Error("No Internet Connection.")
         }
     }
 
     private fun handleServerResponse(response: Response<FitnessResult>): NetworkResult<FitnessResult> {
-        return when{
+        return when {
             response.message().toString().contains("timeout") -> {
                 NetworkResult.Error("Connection to Server Timeout")
             }
@@ -61,13 +62,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun hasInternetConnection(): Boolean{
+    private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<Application>().getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)?: return true
-        return when{
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return true
+        return when {
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true

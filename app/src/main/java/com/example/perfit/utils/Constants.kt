@@ -11,7 +11,7 @@ class Constants {
         const val RECORDING_DURATION_LIMIT = 5
 
         // Network
-        const val BASE_URL = "http://localhost:5000"
+        const val BASE_URL = "http://10.0.2.2:5000"
         const val KEY_ID = "timestamp"
         const val KEY_MODE = "mode"
         const val KEY_VIDEO = "video"

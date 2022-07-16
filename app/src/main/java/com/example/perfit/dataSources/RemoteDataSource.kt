@@ -8,11 +8,11 @@ import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
     private val fitnessApi: FitnessApi
-){
-    suspend fun sendRecording(queries: Map<String, String>): Response<FitnessResult> {
-        for ((key, value) in queries){
+) {
+    suspend fun sendRecording(data: Map<String, String>): Response<FitnessResult> {
+        for ((key, value) in data) {
             Log.d("Map", "$key $value")
         }
-        return fitnessApi.sendRecording(queries)
+        return fitnessApi.sendRecording(data)
     }
 }

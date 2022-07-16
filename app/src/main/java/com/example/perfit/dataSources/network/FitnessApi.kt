@@ -5,9 +5,9 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface FitnessApi {
-    @Headers
+    @Headers("Content-Type: application/json")
     @POST("/feedback")
     suspend fun sendRecording(
-        @Body queries: Map<String, String>
+        @Body data: Map<String, String>
     ): Response<FitnessResult>
 }

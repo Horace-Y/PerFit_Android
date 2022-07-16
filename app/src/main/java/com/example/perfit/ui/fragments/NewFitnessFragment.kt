@@ -56,14 +56,18 @@ class NewFitnessFragment : Fragment() {
         setUpIntentLaunchers()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNewFitnessBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainViewModel = mainViewModel
         _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
 
-        if (selectedAction != null){
+        if (selectedAction != null) {
             binding.textSelectedAction.text = "Selected: $selectedAction"
         }
 
@@ -88,12 +92,12 @@ class NewFitnessFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun setUpIntentLaunchers(){
+    private fun setUpIntentLaunchers() {
         selectLauncher = registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val intent: Intent? = result.data
                 selectedAction = intent?.getStringExtra("Mode")
-                if (selectedAction != null){
+                if (selectedAction != null) {
                     binding.textSelectedAction.text = "Selected: $selectedAction"
                 }
             }
@@ -113,10 +117,14 @@ class NewFitnessFragment : Fragment() {
                     duration = extractMetadata(METADATA_KEY_DURATION)?.toLongOrNull()
                     release()
                 }
-                if (duration == null){
+                if (duration == null) {
                     Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
-                } else if ((duration!!/1000) > RECORDING_DURATION_LIMIT){
-                    Toast.makeText(context, "Video exceeds the maximum length allowed", Toast.LENGTH_SHORT).show()
+                } else if ((duration!! / 1000) > RECORDING_DURATION_LIMIT) {
+                    Toast.makeText(
+                        context,
+                        "Video exceeds the maximum length allowed",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     uploadVideo(intent?.data)
                 }
@@ -126,12 +134,12 @@ class NewFitnessFragment : Fragment() {
         }
     }
 
-    private fun selectFitnessAction(){
+    private fun selectFitnessAction() {
         selectLauncher.launch(Intent(activity, FitnessActionSelectionActivity::class.java))
     }
 
-    private fun startVideoRecording(){
-        if (selectedAction == null){
+    private fun startVideoRecording() {
+        if (selectedAction == null) {
             Toast.makeText(context, "Please select an action first", Toast.LENGTH_SHORT).show()
             return
         }
@@ -140,8 +148,8 @@ class NewFitnessFragment : Fragment() {
         })
     }
 
-    private fun selectLocalVideo(){
-        if (selectedAction == null){
+    private fun selectLocalVideo() {
+        if (selectedAction == null) {
             Toast.makeText(context, "Please select an action first", Toast.LENGTH_SHORT).show()
             return
         }
@@ -150,8 +158,8 @@ class NewFitnessFragment : Fragment() {
         })
     }
 
-    private fun uploadVideo(videoUri: Uri?){
-        if (videoUri == null){
+    private fun uploadVideo(videoUri: Uri?) {
+        if (videoUri == null) {
             Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
             return
         }
@@ -159,9 +167,10 @@ class NewFitnessFragment : Fragment() {
         alertDialog.show()
 
         // convert video file to string using base64 encoding
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
+        val timestamp =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
         val videoInputStream = context?.contentResolver?.openInputStream(videoUri)
-        if (videoInputStream == null){
+        if (videoInputStream == null) {
             Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
             return
         }
@@ -172,7 +181,7 @@ class NewFitnessFragment : Fragment() {
         alertDialog.dismiss()
 
         // navigate to feedback activity
-        if (this::fitnessResult.isInitialized){
+        if (this::fitnessResult.isInitialized) {
             val intent = Intent(activity, FitnessResultActivity::class.java).apply {
                 putExtra("FitnessResults", fitnessResult)
             }
@@ -180,8 +189,13 @@ class NewFitnessFragment : Fragment() {
         }
     }
 
-    private fun sendVideoThroughApi(timestamp: String, video: String){
-        mainViewModel.sendRecording(applyPostQueries(timestamp, selectedAction!!, video))
+    private fun sendVideoThroughApi(timestamp: String, video: String) {
+        val data: HashMap<String, String> = HashMap()
+
+        data[KEY_ID] = timestamp
+        data[KEY_MODE] = selectedAction!!
+        data[KEY_VIDEO] = video
+        mainViewModel.sendRecording(data)
         mainViewModel.sendRecordingResponse.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkResult.Success -> {
@@ -198,15 +212,4 @@ class NewFitnessFragment : Fragment() {
             }
         }
     }
-
-    private fun applyPostQueries(timestamp: String, mode: String, video: String): HashMap<String, String> {
-        val queries: HashMap<String, String> = HashMap()
-
-        queries[KEY_ID] = timestamp
-        queries[KEY_MODE] = mode
-        queries[KEY_VIDEO] = video
-
-        return queries
-    }
-
 }
