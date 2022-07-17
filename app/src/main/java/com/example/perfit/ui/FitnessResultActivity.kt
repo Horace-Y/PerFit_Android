@@ -2,20 +2,10 @@ package com.example.perfit.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.util.Base64.DEFAULT
-import android.util.Base64.decode
-import android.util.Log
 import android.view.MenuItem
 import android.widget.MediaController
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.perfit.R
 import com.example.perfit.databinding.ActivityFitnessResultBinding
-import com.example.perfit.models.FitnessResult
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.*
 
 class FitnessResultActivity : AppCompatActivity() {
 
@@ -30,15 +20,13 @@ class FitnessResultActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // display fitness result
-        val outputFile = handleResultIntent()
-
-        // video playback
+        // display feedback score and video
+        binding.textScore.text = intent.getStringExtra("score")
         val mediaController = MediaController(this).apply {
             setAnchorView(binding.videoFeedback)
         }
         binding.videoFeedback.apply {
-            setVideoURI(Uri.parse(outputFile.toString()))
+            setVideoURI(Uri.parse(intent.getStringExtra("video")))
             setMediaController(mediaController)
             start()
         }
@@ -48,25 +36,5 @@ class FitnessResultActivity : AppCompatActivity() {
         if (item.itemId == android.R.id.home)
             finish()
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun handleResultIntent(): FileOutputStream{
-        val fitnessResult: FitnessResult? = intent.getParcelableExtra("FitnessResults")
-        if (fitnessResult == null){
-            Toast.makeText(this, "Server data cannot be processed", Toast.LENGTH_SHORT).show()
-            finish()
-        }
-        Log.d("result", "score: " + fitnessResult!!.score)
-        Log.d("result", "video: " + fitnessResult!!.video)
-        binding.textScore.text = fitnessResult!!.score.toString()
-
-        val videoBytes = decode(fitnessResult.video, DEFAULT)
-        val outputFile = FileOutputStream(Environment.getExternalStorageDirectory().toString() + "/" + R.string.app_name
-                + SimpleDateFormat("_yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()) + ".mp4").apply {
-            write(videoBytes)
-            close()
-        }
-
-        return outputFile
     }
 }

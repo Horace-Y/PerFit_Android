@@ -7,7 +7,9 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Base64.DEFAULT
 import android.util.Base64.encodeToString
 import android.view.*
@@ -25,10 +27,11 @@ import com.example.perfit.utils.Constants.Companion.KEY_ID
 import com.example.perfit.utils.Constants.Companion.KEY_MODE
 import com.example.perfit.utils.Constants.Companion.KEY_VIDEO
 import com.example.perfit.utils.Constants.Companion.RECORDING_DURATION_LIMIT
-import com.example.perfit.utils.Constants.Companion.URI1
 import com.example.perfit.utils.NetworkResult
 import com.example.perfit.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,7 +49,6 @@ class NewFitnessFragment : Fragment() {
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
     private lateinit var uploadLauncher: ActivityResultLauncher<Intent>
     private lateinit var alertDialog: AlertDialog
-    private lateinit var fitnessResult: FitnessResult
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,8 +131,6 @@ class NewFitnessFragment : Fragment() {
                     uploadVideo(intent?.data)
                 }
             }
-            // TODO: testing only
-            uploadVideo(URI1)
         }
     }
 
@@ -163,10 +163,10 @@ class NewFitnessFragment : Fragment() {
             Toast.makeText(context, "Video data cannot be read", Toast.LENGTH_SHORT).show()
             return
         }
-        // show processing dialog
+
         alertDialog.show()
 
-        // convert video file to string using base64 encoding
+        // encode video file to base64 string
         val timestamp =
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis())
         val videoInputStream = context?.contentResolver?.openInputStream(videoUri)
@@ -175,31 +175,21 @@ class NewFitnessFragment : Fragment() {
             return
         }
         val videoData = encodeToString(videoInputStream.readBytes(), DEFAULT)
+
         sendVideoThroughApi(timestamp, videoData)
-
-        // dismiss processing dialog
-        alertDialog.dismiss()
-
-        // navigate to feedback activity
-        if (this::fitnessResult.isInitialized) {
-            val intent = Intent(activity, FitnessResultActivity::class.java).apply {
-                putExtra("FitnessResults", fitnessResult)
-            }
-            startActivity(intent)
-        }
     }
 
     private fun sendVideoThroughApi(timestamp: String, video: String) {
         val data: HashMap<String, String> = HashMap()
-
         data[KEY_ID] = timestamp
         data[KEY_MODE] = selectedAction!!
         data[KEY_VIDEO] = video
+
         mainViewModel.sendRecording(data)
         mainViewModel.sendRecordingResponse.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkResult.Success -> {
-                    fitnessResult = response.data!!
+                    processServerResponse(response.data!!)
                 }
                 is NetworkResult.Error -> {
                     Toast.makeText(
@@ -211,5 +201,26 @@ class NewFitnessFragment : Fragment() {
                 else -> {}
             }
         }
+    }
+
+    private fun processServerResponse(fitnessResult: FitnessResult){
+        alertDialog.dismiss()
+
+        // decode base64 string to video file
+        val videoBytes = Base64.decode(fitnessResult.video, DEFAULT)
+        val videoFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+            "PerFit" + SimpleDateFormat("_yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()) + ".mp4")
+        FileOutputStream(videoFile).apply {
+            write(videoBytes)
+            close()
+        }
+
+        // launch fitness result activity
+        val videoUri = Uri.fromFile(videoFile)
+        val intent = Intent(activity, FitnessResultActivity::class.java).apply {
+            putExtra("score", fitnessResult.score.toString())
+            putExtra("video", videoUri.path)
+        }
+        startActivity(intent)
     }
 }
