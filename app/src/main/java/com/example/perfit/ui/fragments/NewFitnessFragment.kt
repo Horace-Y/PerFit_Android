@@ -192,6 +192,7 @@ class NewFitnessFragment : Fragment() {
                     processServerResponse(response.data!!)
                 }
                 is NetworkResult.Error -> {
+                    alertDialog.dismiss()
                     Toast.makeText(
                         requireContext(),
                         response.message.toString(),
@@ -220,6 +221,7 @@ class NewFitnessFragment : Fragment() {
         val intent = Intent(activity, FitnessResultActivity::class.java).apply {
             putExtra("score", fitnessResult.score.toString())
             putExtra("video", videoUri.path)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         startActivity(intent)
     }
