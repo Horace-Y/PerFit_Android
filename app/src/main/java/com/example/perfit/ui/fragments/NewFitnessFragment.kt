@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.perfit.databinding.FragmentNewFitnessBinding
 import com.example.perfit.databinding.FragmentProcessingDialogBinding
-import com.example.perfit.models.FitnessResult
+import com.example.perfit.models.FitnessFeedback
 import com.example.perfit.ui.FitnessActionSelectionActivity
 import com.example.perfit.ui.FitnessResultActivity
 import com.example.perfit.utils.Constants.Companion.KEY_ID
@@ -204,11 +204,11 @@ class NewFitnessFragment : Fragment() {
         }
     }
 
-    private fun processServerResponse(fitnessResult: FitnessResult){
+    private fun processServerResponse(fitnessFeedback: FitnessFeedback){
         alertDialog.dismiss()
 
         // decode base64 string to video file
-        val videoBytes = Base64.decode(fitnessResult.video, DEFAULT)
+        val videoBytes = Base64.decode(fitnessFeedback.video, DEFAULT)
         val videoFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
             "PerFit" + SimpleDateFormat("_yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis()) + ".mp4")
         FileOutputStream(videoFile).apply {
@@ -219,7 +219,7 @@ class NewFitnessFragment : Fragment() {
         // launch fitness result activity
         val videoUri = Uri.fromFile(videoFile)
         val intent = Intent(activity, FitnessResultActivity::class.java).apply {
-            putExtra("score", fitnessResult.score.toString())
+            putExtra("score", fitnessFeedback.score.toString())
             putExtra("video", videoUri.path)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }

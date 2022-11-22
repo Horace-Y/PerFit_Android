@@ -6,7 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.*
 import com.example.perfit.dataSources.Repository
-import com.example.perfit.models.FitnessResult
+import com.example.perfit.models.FitnessFeedback
 import com.example.perfit.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     /** RETROFIT */
-    val sendRecordingResponse: MutableLiveData<NetworkResult<FitnessResult>> = MutableLiveData()
+    val sendRecordingResponse: MutableLiveData<NetworkResult<FitnessFeedback>> = MutableLiveData()
 
     fun sendRecording(data: Map<String, String>) = viewModelScope.launch {
         sendRecordingToServer(data)
@@ -46,7 +46,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun handleServerResponse(response: Response<FitnessResult>): NetworkResult<FitnessResult> {
+    private fun handleServerResponse(response: Response<FitnessFeedback>): NetworkResult<FitnessFeedback> {
         return when {
             response.message().toString().contains("timeout") -> {
                 NetworkResult.Error("Connection to Server Timeout")

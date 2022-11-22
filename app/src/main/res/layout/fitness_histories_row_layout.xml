@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="action"
+            type="com.example.perfit.models.FitnessActions" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fitness_action_row_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/row_cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/lightMediumGray"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/cardBackgroundColor">
+
+                <TextView
+                    android:id="@+id/text_date_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/date"
+                    android:textColor="@color/titleColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_action_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/action"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/text_date_title"
+                    app:layout_constraintTop_toBottomOf="@+id/text_date_title" />
+
+                <TextView
+                    android:id="@+id/text_score_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/score"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/text_action_name"
+                    app:layout_constraintTop_toBottomOf="@+id/text_action_name" />
+
+                <TextView
+                    android:id="@+id/text_date_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:maxLines="5"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_date_title"
+                    app:layout_constraintStart_toEndOf="@+id/text_date_title"
+                    app:layout_constraintTop_toTopOf="@+id/text_date_title" />
+
+                <TextView
+                    android:id="@+id/text_action_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_action_name"
+                    app:layout_constraintStart_toEndOf="@+id/text_action_name"
+                    app:layout_constraintTop_toTopOf="@+id/text_action_name" />
+
+                <TextView
+                    android:id="@+id/text_score_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:maxLines="5"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_score_title"
+                    app:layout_constraintStart_toEndOf="@+id/text_score_title"
+                    app:layout_constraintTop_toTopOf="@+id/text_score_title" />
+
+                <Button
+                    android:id="@+id/button_view_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="@color/mediumGray"
+                    android:text="@string/view_video"
+                    android:textColor="@color/darker"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

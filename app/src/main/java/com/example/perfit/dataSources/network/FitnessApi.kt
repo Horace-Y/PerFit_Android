@@ -1,6 +1,6 @@
 package com.example.perfit.dataSources.network
 
-import com.example.perfit.models.FitnessResult
+import com.example.perfit.models.FitnessFeedback
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -9,5 +9,5 @@ interface FitnessApi {
     @POST("/feedback")
     suspend fun sendRecording(
         @Body data: Map<String, String>
-    ): Response<FitnessResult>
+    ): Response<FitnessFeedback>
 }

@@ -1,7 +1,6 @@
 package com.example.perfit.dataSources.network
 
 import com.example.perfit.utils.Constants.Companion.BASE_URL
-import com.example.perfit.dataSources.network.FitnessApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
