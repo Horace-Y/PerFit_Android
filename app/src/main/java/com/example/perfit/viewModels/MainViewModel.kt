@@ -6,12 +6,18 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.*
 import com.example.perfit.dataSources.Repository
+import com.example.perfit.dataSources.database.FitnessResultEntity
+import com.example.perfit.models.FitnessActions
 import com.example.perfit.models.FitnessFeedback
+import com.example.perfit.models.FitnessResult
 import com.example.perfit.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,21 +29,16 @@ class MainViewModel @Inject constructor(
     /** RETROFIT */
     val sendRecordingResponse: MutableLiveData<NetworkResult<FitnessFeedback>> = MutableLiveData()
 
-    fun sendRecording(data: Map<String, String>) = viewModelScope.launch {
-        sendRecordingToServer(data)
+    fun sendRecording(recordingData: Map<String, String>) = viewModelScope.launch {
+        sendRecordingToServer(recordingData)
     }
 
-    private suspend fun sendRecordingToServer(data: Map<String, String>) {
+    private suspend fun sendRecordingToServer(recordingData: Map<String, String>) {
         sendRecordingResponse.value = NetworkResult.Loading()
         if (hasInternetConnection()) {
             try {
-                val response = repository.remote.sendRecording(data)
+                val response = repository.remote.sendRecording(recordingData)
                 sendRecordingResponse.value = handleServerResponse(response)
-                // TODO: save the received feedback to local
-//                val responseData = getFeedbackResponse.value!!.data
-//                if(responseData != null){
-//                    offlineCacheResult(responseData)
-//                }
             } catch (e: Exception) {
                 sendRecordingResponse.value = NetworkResult.Error("Server Response Not Received.")
             }
@@ -74,4 +75,23 @@ class MainViewModel @Inject constructor(
             else -> false
         }
     }
+
+    /** ROOM DATABASE */
+    val readResults: LiveData<List<FitnessResultEntity>> = repository.local.readResults().asLiveData()
+
+    fun offlineCacheResult(fitnessActions: FitnessActions, score: Int, videoPath: String){
+        val fitnessResult = FitnessResult(SimpleDateFormat("yyyy-MM-dd", Locale.US).format(System.currentTimeMillis()), fitnessActions, score, videoPath)
+        val fitnessResultEntity = FitnessResultEntity(fitnessResult)
+        addNewResult(fitnessResultEntity)
+    }
+
+    private fun addNewResult(fitnessResultEntity: FitnessResultEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.addNewResult(fitnessResultEntity)
+        }
+
+    private fun deleteFavoriteRecipe(fitnessResultEntity: FitnessResultEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.deleteResult(fitnessResultEntity)
+        }
 }

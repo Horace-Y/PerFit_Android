@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.perfit.adapters.FitnessHistoryAdapter
 import com.example.perfit.databinding.FragmentFitnessHistoryBinding
-import com.example.perfit.utils.Constants
 import com.example.perfit.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FitnessHistoryFragment : Fragment(){
@@ -19,7 +20,7 @@ class FitnessHistoryFragment : Fragment(){
     private var _binding: FragmentFitnessHistoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var historyAdapter: FitnessHistoryAdapter
+    private val historyAdapter by lazy { FitnessHistoryAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +36,26 @@ class FitnessHistoryFragment : Fragment(){
         // set up recycler view and its adapter
         setupRecyclerView()
 
+        // load local fitness results
+        lifecycleScope.launchWhenStarted {
+            readDatabase()
+        }
+
         return binding.root
     }
 
     private fun setupRecyclerView(){
-        historyAdapter = FitnessHistoryAdapter(Constants.FITNESS_RESULTS)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = historyAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun readDatabase(){
+        lifecycleScope.launch {
+            mainViewModel.readResults.observe(viewLifecycleOwner) { database ->
+                if (database.isNotEmpty()) {
+                    historyAdapter.setData(database[0].fitnessResult)
+                }
+            }
+        }
     }
 }

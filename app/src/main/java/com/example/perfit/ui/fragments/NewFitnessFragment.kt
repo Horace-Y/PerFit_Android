@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.perfit.databinding.FragmentNewFitnessBinding
 import com.example.perfit.databinding.FragmentProcessingDialogBinding
+import com.example.perfit.models.FitnessActions
 import com.example.perfit.models.FitnessFeedback
 import com.example.perfit.ui.FitnessActionSelectionActivity
 import com.example.perfit.ui.FitnessResultActivity
@@ -43,7 +44,7 @@ class NewFitnessFragment : Fragment() {
     private val binding get() = _binding!!
     private var _dialogBinding: FragmentProcessingDialogBinding? = null
     private val dialogBinding get() = _dialogBinding!!
-    private var selectedAction: String? = null
+    private var selectedAction: FitnessActions? = null
     private lateinit var mainViewModel: MainViewModel
     private lateinit var selectLauncher: ActivityResultLauncher<Intent>
     private lateinit var recordLauncher: ActivityResultLauncher<Intent>
@@ -98,7 +99,7 @@ class NewFitnessFragment : Fragment() {
         selectLauncher = registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val intent: Intent? = result.data
-                selectedAction = intent?.getStringExtra("Mode")
+                selectedAction = intent?.getParcelableExtra<FitnessActions>("Mode")
                 if (selectedAction != null) {
                     binding.textSelectedAction.text = "Selected: $selectedAction"
                 }
@@ -182,7 +183,7 @@ class NewFitnessFragment : Fragment() {
     private fun sendVideoThroughApi(timestamp: String, video: String) {
         val data: HashMap<String, String> = HashMap()
         data[KEY_ID] = timestamp
-        data[KEY_MODE] = selectedAction!!
+        data[KEY_MODE] = selectedAction!!.name
         data[KEY_VIDEO] = video
 
         mainViewModel.sendRecording(data)
@@ -215,6 +216,8 @@ class NewFitnessFragment : Fragment() {
             write(videoBytes)
             close()
         }
+
+        mainViewModel.offlineCacheResult(selectedAction!!, fitnessFeedback.score, videoFile.path)
 
         // launch fitness result activity
         val videoUri = Uri.fromFile(videoFile)

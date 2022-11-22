@@ -21,7 +21,7 @@ class FitnessActionAdapter(private val actions: List<FitnessActions>, private va
             binding.textDescriptionContent.text = action.description
             binding.buttonSelect.setOnClickListener {
                 val intent = Intent().apply {
-                    putExtra("Mode", action.name)
+                    putExtra("Mode", action)
                 }
                 activity.setResult(RESULT_OK, intent)
                 activity.finish()

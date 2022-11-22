@@ -1,10 +1,14 @@
 package com.example.perfit.models
 
+import com.google.gson.annotations.SerializedName
+
 data class FitnessResult(
-
+    @SerializedName("dateTime")
     val dateTime: String,
-
+    @SerializedName("action")
     val action: FitnessActions,
-
-    val feedback: FitnessFeedback
+    @SerializedName("score")
+    val score: Int,
+    @SerializedName("videoPath")
+    val videoPath: String
 )
