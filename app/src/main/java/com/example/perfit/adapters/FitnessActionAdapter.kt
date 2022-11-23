@@ -2,14 +2,17 @@ package com.example.perfit.adapters
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.perfit.databinding.FitnessActionsRowLayoutBinding
 import com.example.perfit.models.FitnessActions
 
-class FitnessActionAdapter(private val actions: List<FitnessActions>, private val activity: Activity)
+class FitnessActionAdapter(private val actions: List<FitnessActions>, private val videoView: VideoView,
+                           private val dialog: AlertDialog, private val activity: Activity)
     : RecyclerView.Adapter<FitnessActionAdapter.FitnessActionViewHolder>() {
 
     inner class FitnessActionViewHolder(private val binding: FitnessActionsRowLayoutBinding) :
@@ -19,6 +22,13 @@ class FitnessActionAdapter(private val actions: List<FitnessActions>, private va
             binding.textActionContent.text = action.name
             binding.textDifficultyContent.text = action.difficulty
             binding.textDescriptionContent.text = action.description
+            binding.buttonViewDemo.setOnClickListener {
+                videoView.apply {
+                    setVideoURI(action.video)
+                    start()
+                }
+                dialog.show()
+            }
             binding.buttonSelect.setOnClickListener {
                 val intent = Intent().apply {
                     putExtra("Mode", action)

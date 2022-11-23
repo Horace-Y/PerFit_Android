@@ -1,5 +1,6 @@
 package com.example.perfit.ui.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.perfit.adapters.FitnessHistoryAdapter
 import com.example.perfit.databinding.FragmentFitnessHistoryBinding
+import com.example.perfit.databinding.FragmentVideoDialogBinding
 import com.example.perfit.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -19,8 +21,11 @@ class FitnessHistoryFragment : Fragment(){
 
     private var _binding: FragmentFitnessHistoryBinding? = null
     private val binding get() = _binding!!
+    private var _videoDialogBinding: FragmentVideoDialogBinding? = null
+    private val videoDialogBinding get() = _videoDialogBinding!!
+    private lateinit var videoDialog: AlertDialog
     private lateinit var mainViewModel: MainViewModel
-    private val historyAdapter by lazy { FitnessHistoryAdapter() }
+    private lateinit var historyAdapter : FitnessHistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +37,7 @@ class FitnessHistoryFragment : Fragment(){
         _binding = FragmentFitnessHistoryBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainViewModel = mainViewModel
+        _videoDialogBinding = FragmentVideoDialogBinding.inflate(inflater, container, false)
 
         // set up recycler view and its adapter
         setupRecyclerView()
@@ -41,10 +47,16 @@ class FitnessHistoryFragment : Fragment(){
             readDatabase()
         }
 
+        // video dialog
+        videoDialog = AlertDialog.Builder(context).apply {
+            setView(videoDialogBinding.root)
+        }.create()
+
         return binding.root
     }
 
     private fun setupRecyclerView(){
+        historyAdapter = FitnessHistoryAdapter(videoDialogBinding.videoDemo, videoDialog)
         binding.recyclerView.adapter = historyAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
     }

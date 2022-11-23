@@ -1,14 +1,17 @@
 package com.example.perfit.adapters
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.VideoView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.perfit.databinding.FitnessHistoriesRowLayoutBinding
 import com.example.perfit.models.FitnessResult
 import com.example.perfit.utils.FitnessResultsDiffUtil
 
-class FitnessHistoryAdapter : RecyclerView.Adapter<FitnessHistoryAdapter.FitnessHistoryViewHolder>() {
+class FitnessHistoryAdapter(private val videoView: VideoView, private val dialog: AlertDialog) :
+    RecyclerView.Adapter<FitnessHistoryAdapter.FitnessHistoryViewHolder>() {
 
     private var results = emptyList<FitnessResult>()
 
@@ -19,6 +22,11 @@ class FitnessHistoryAdapter : RecyclerView.Adapter<FitnessHistoryAdapter.Fitness
             binding.textActionContent.text = result.action.name
             binding.textScoreContent.text = result.score.toString()
             binding.buttonViewFeedback.setOnClickListener {
+                videoView.apply {
+                    setVideoURI(result.video)
+                    start()
+                }
+                dialog.show()
             }
             binding.executePendingBindings()
         }

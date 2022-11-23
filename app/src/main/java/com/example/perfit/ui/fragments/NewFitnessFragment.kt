@@ -16,6 +16,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.perfit.databinding.FragmentNewFitnessBinding
@@ -101,7 +102,7 @@ class NewFitnessFragment : Fragment() {
                 val intent: Intent? = result.data
                 selectedAction = intent?.getParcelableExtra<FitnessActions>("Mode")
                 if (selectedAction != null) {
-                    binding.textSelectedAction.text = "Selected: $selectedAction"
+                    binding.textSelectedAction.text = "Selected: ${selectedAction!!.name}"
                 }
             }
         }
@@ -217,7 +218,7 @@ class NewFitnessFragment : Fragment() {
             close()
         }
 
-        mainViewModel.offlineCacheResult(selectedAction!!, fitnessFeedback.score, videoFile.path)
+        mainViewModel.offlineCacheResult(selectedAction!!, fitnessFeedback.score, videoFile.toUri())
 
         // launch fitness result activity
         val videoUri = Uri.fromFile(videoFile)
