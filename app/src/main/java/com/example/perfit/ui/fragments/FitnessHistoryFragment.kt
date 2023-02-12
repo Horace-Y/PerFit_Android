@@ -39,9 +39,6 @@ class FitnessHistoryFragment : Fragment(){
         binding.mainViewModel = mainViewModel
         _videoDialogBinding = FragmentVideoDialogBinding.inflate(inflater, container, false)
 
-        // set up recycler view and its adapter
-        setupRecyclerView()
-
         // load local fitness results
         lifecycleScope.launchWhenStarted {
             readDatabase()
@@ -51,6 +48,9 @@ class FitnessHistoryFragment : Fragment(){
         videoDialog = AlertDialog.Builder(context).apply {
             setView(videoDialogBinding.root)
         }.create()
+
+        // set up recycler view and its adapter
+        setupRecyclerView()
 
         return binding.root
     }

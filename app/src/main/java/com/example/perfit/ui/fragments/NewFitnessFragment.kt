@@ -72,7 +72,7 @@ class NewFitnessFragment : Fragment() {
         _dialogBinding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
 
         if (selectedAction != null) {
-            binding.textSelectedAction.text = "Selected: $selectedAction"
+            binding.textSelectedAction.text = "Selected: ${selectedAction!!.name}"
         }
 
         // loading dialog & spinner
