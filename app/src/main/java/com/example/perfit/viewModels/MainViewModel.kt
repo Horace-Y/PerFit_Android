@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.Uri
 import androidx.lifecycle.*
 import com.example.perfit.dataSources.Repository
 import com.example.perfit.dataSources.database.FitnessResultEntity
@@ -80,7 +79,7 @@ class MainViewModel @Inject constructor(
     /** ROOM DATABASE */
     val readResults: LiveData<List<FitnessResultEntity>> = repository.local.readResults().asLiveData()
 
-    fun offlineCacheResult(fitnessActions: FitnessActions, score: Int, video: Uri){
+    fun offlineCacheResult(fitnessActions: FitnessActions, score: Int, video: String){
         val fitnessResult = FitnessResult(SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US).format(System.currentTimeMillis()), fitnessActions, score, video)
         val fitnessResultEntity = FitnessResultEntity(fitnessResult)
         addNewResult(fitnessResultEntity)
@@ -91,7 +90,7 @@ class MainViewModel @Inject constructor(
             repository.local.addNewResult(fitnessResultEntity)
         }
 
-    private fun deleteFavoriteRecipe(fitnessResultEntity: FitnessResultEntity) =
+    private fun deleteLocalResult(fitnessResultEntity: FitnessResultEntity) =
         viewModelScope.launch(Dispatchers.IO) {
             repository.local.deleteResult(fitnessResultEntity)
         }

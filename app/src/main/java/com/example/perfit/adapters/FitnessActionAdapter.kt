@@ -7,6 +7,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.VideoView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.perfit.databinding.FitnessActionsRowLayoutBinding
 import com.example.perfit.models.FitnessActions
@@ -24,7 +25,7 @@ class FitnessActionAdapter(private val actions: List<FitnessActions>, private va
             binding.textDescriptionContent.text = action.description
             binding.buttonViewDemo.setOnClickListener {
                 videoView.apply {
-                    setVideoURI(action.video)
+                    setVideoURI(action.video.toUri())
                     start()
                 }
                 dialog.show()

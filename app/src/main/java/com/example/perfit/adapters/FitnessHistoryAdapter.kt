@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.VideoView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.perfit.databinding.FitnessHistoriesRowLayoutBinding
@@ -23,7 +24,7 @@ class FitnessHistoryAdapter(private val videoView: VideoView, private val dialog
             binding.textScoreContent.text = result.score.toString()
             binding.buttonViewFeedback.setOnClickListener {
                 videoView.apply {
-                    setVideoURI(result.video)
+                    setVideoURI(result.video.toUri())
                     start()
                 }
                 dialog.show()

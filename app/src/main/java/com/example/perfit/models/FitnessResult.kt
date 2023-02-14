@@ -1,6 +1,5 @@
 package com.example.perfit.models
 
-import android.net.Uri
 import com.google.gson.annotations.SerializedName
 
 data class FitnessResult(
@@ -11,5 +10,5 @@ data class FitnessResult(
     @SerializedName("score")
     val score: Int,
     @SerializedName("videoPath")
-    val video: Uri
+    val video: String
 )

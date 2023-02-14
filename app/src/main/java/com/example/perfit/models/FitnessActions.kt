@@ -1,6 +1,5 @@
 package com.example.perfit.models
 
-import android.net.Uri
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -14,5 +13,5 @@ data class FitnessActions (
     @SerializedName("actionDescription")
     val description: String,
     @SerializedName("actionVideo")
-    val video: Uri
+    val video: String
 ): Parcelable
