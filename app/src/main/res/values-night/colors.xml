@@ -19,7 +19,7 @@
 
     <!-- DARK THEME -->
 
-    <color name="backgroundColor">@color/darkGray</color>
+    <color name="backgroundColor">@color/darker</color>
     <color name="placeholderColor">@color/darker</color>
     <color name="itemColor">@color/mediumGray</color>
 
@@ -31,7 +31,7 @@
 
     // Custom CardView Style
     <color name="strokeColor">@color/lightGray</color>
-    <color name="cardBackgroundColor">@color/darkGray</color>
+    <color name="cardBackgroundColor">@color/darker</color>
     <color name="cardBackgroundLightColor">#106200EA</color>
     <color name="titleColor">@color/mediumGray</color>
     <color name="descColor">@color/mediumGray</color>
@@ -39,7 +39,7 @@
     <color name="statusBarColor">@color/darker</color>
     <color name="contextualStatusBarColor">@color/dark</color>
     <color name="contextualActionBarColor">@color/dark</color>
-    <color name="actionBarBackgroundColor">@color/darkerBlue</color>
+    <color name="actionBarBackgroundColor">@color/darker</color>
 
     // Custom BottomNavigationView Style
     <color name="bottomNavBackground">@color/white</color>
