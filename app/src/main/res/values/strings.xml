@@ -9,7 +9,7 @@
     <string name="then">Then</string>
     <string name="or">OR</string>
     <string name="record">Record</string>
-    <string name="max_length_supported">(The maximum video length supported is 30 seconds)</string>
+    <string name="max_length_supported">(The maximum video length supported is 5 seconds)</string>
     <string name="loading">Processing your video</string>
     <string name="correctness_score_header">Your correctness score is</string>
     <string name="correctness_score">100</string>

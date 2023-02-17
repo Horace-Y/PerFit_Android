@@ -1,13 +1,15 @@
 <resources>
-    <!-- Base application theme. -->
     <style name="Theme.PerFit" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/mainBlue</item>
         <item name="colorPrimaryVariant">@color/skyBlue</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/statusBarColor</item>
-        <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/CustomActionBarStyle</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigationViewStyle</item>
+    </style>
+
+    <style name="CustomActionBarStyle" parent="Widget.MaterialComponents.ActionBar.Primary">
+        <item name="background">@color/actionBarBackgroundColor</item>
     </style>
 
     <style name="FitnessResultActivityStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
