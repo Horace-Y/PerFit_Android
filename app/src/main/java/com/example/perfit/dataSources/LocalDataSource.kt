@@ -8,8 +8,8 @@ import javax.inject.Inject
 class LocalDataSource @Inject constructor(
     private val fitnessResultsDAO: FitnessResultsDAO
 ){
-    suspend fun addNewResult(fitnessResultEntity: FitnessResultEntity) {
-        return fitnessResultsDAO.addNewResult(fitnessResultEntity)
+    suspend fun addResult(fitnessResultEntity: FitnessResultEntity) {
+        return fitnessResultsDAO.addResult(fitnessResultEntity)
     }
 
     fun readResults(): Flow<List<FitnessResultEntity>> {

@@ -14,7 +14,7 @@ import com.example.perfit.utils.FitnessResultsDiffUtil
 class FitnessHistoryAdapter(private val videoView: VideoView, private val dialog: AlertDialog) :
     RecyclerView.Adapter<FitnessHistoryAdapter.FitnessHistoryViewHolder>() {
 
-    private var results = emptyList<FitnessResult>()
+    private var results = listOf<FitnessResult>()
 
     inner class FitnessHistoryViewHolder(private val binding: FitnessHistoriesRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -49,9 +49,13 @@ class FitnessHistoryAdapter(private val videoView: VideoView, private val dialog
     }
 
     fun setData(newData: FitnessResult){
-        val recipesDiffUtil = FitnessResultsDiffUtil(results, listOf(newData))
+        val newResults = mutableListOf<FitnessResult>().apply {
+            addAll(results)
+            add(newData)
+        }
+        val recipesDiffUtil = FitnessResultsDiffUtil(results, newResults)
         val diffUtilResult = DiffUtil.calculateDiff(recipesDiffUtil)
-        results = listOf(newData)
+        results = newResults
         diffUtilResult.dispatchUpdatesTo(this)
     }
 }

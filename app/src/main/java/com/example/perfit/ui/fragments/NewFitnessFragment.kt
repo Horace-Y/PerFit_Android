@@ -206,8 +206,6 @@ class NewFitnessFragment : Fragment() {
     }
 
     private fun processServerResponse(fitnessFeedback: FitnessFeedback){
-        alertDialog.dismiss()
-
         // decode base64 string to video file
         val videoBytes = Base64.decode(fitnessFeedback.video, DEFAULT)
         val videoFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
@@ -226,6 +224,8 @@ class NewFitnessFragment : Fragment() {
             putExtra("video", videoUri.path)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
+
+        alertDialog.dismiss()
         startActivity(intent)
     }
 }

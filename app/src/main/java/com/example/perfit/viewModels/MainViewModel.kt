@@ -80,14 +80,15 @@ class MainViewModel @Inject constructor(
     val readResults: LiveData<List<FitnessResultEntity>> = repository.local.readResults().asLiveData()
 
     fun offlineCacheResult(fitnessActions: FitnessActions, score: Int, video: String){
-        val fitnessResult = FitnessResult(SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US).format(System.currentTimeMillis()), fitnessActions, score, video)
+        val fitnessResult = FitnessResult(SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US)
+            .format(System.currentTimeMillis()), fitnessActions, score, video)
         val fitnessResultEntity = FitnessResultEntity(fitnessResult)
-        addNewResult(fitnessResultEntity)
+        addLocalResult(fitnessResultEntity)
     }
 
-    private fun addNewResult(fitnessResultEntity: FitnessResultEntity) =
+    private fun addLocalResult(fitnessResultEntity: FitnessResultEntity) =
         viewModelScope.launch(Dispatchers.IO) {
-            repository.local.addNewResult(fitnessResultEntity)
+            repository.local.addResult(fitnessResultEntity)
         }
 
     private fun deleteLocalResult(fitnessResultEntity: FitnessResultEntity) =

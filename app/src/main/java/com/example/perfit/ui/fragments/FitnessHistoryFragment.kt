@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.perfit.adapters.FitnessHistoryAdapter
 import com.example.perfit.databinding.FragmentFitnessHistoryBinding
 import com.example.perfit.databinding.FragmentVideoDialogBinding
+import com.example.perfit.utils.observeOnce
 import com.example.perfit.viewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,11 +40,6 @@ class FitnessHistoryFragment : Fragment(){
         binding.mainViewModel = mainViewModel
         _videoDialogBinding = FragmentVideoDialogBinding.inflate(inflater, container, false)
 
-        // load local fitness results
-        lifecycleScope.launchWhenStarted {
-            readDatabase()
-        }
-
         // video dialog
         videoDialog = AlertDialog.Builder(context).apply {
             setView(videoDialogBinding.root)
@@ -52,6 +48,10 @@ class FitnessHistoryFragment : Fragment(){
         // set up recycler view and its adapter
         setupRecyclerView()
 
+        // load local fitness results
+        lifecycleScope.launchWhenStarted {
+            readDatabase()
+        }
         return binding.root
     }
 
@@ -63,9 +63,11 @@ class FitnessHistoryFragment : Fragment(){
 
     private fun readDatabase(){
         lifecycleScope.launch {
-            mainViewModel.readResults.observe(viewLifecycleOwner) { database ->
-                if (database.isNotEmpty()) {
-                    historyAdapter.setData(database[0].fitnessResult)
+            mainViewModel.readResults.observeOnce(viewLifecycleOwner) { resultEntities ->
+                if (resultEntities.isNotEmpty()) {
+                    for (entity in resultEntities){
+                        historyAdapter.setData(entity.fitnessResult)
+                    }
                 }
             }
         }
