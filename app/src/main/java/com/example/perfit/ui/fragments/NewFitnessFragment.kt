@@ -215,12 +215,13 @@ class NewFitnessFragment : Fragment() {
             close()
         }
 
-        mainViewModel.offlineCacheResult(selectedAction!!, fitnessFeedback.score, videoFile.path)
+        mainViewModel.offlineCacheResult(selectedAction!!, fitnessFeedback, videoFile.path)
 
         // launch fitness result activity
         val videoUri = Uri.fromFile(videoFile)
         val intent = Intent(activity, FitnessResultActivity::class.java).apply {
-            putExtra("score", fitnessFeedback.score.toString())
+            putExtra("total", fitnessFeedback.total.toString())
+            putExtra("scores", fitnessFeedback.scores)
             putExtra("video", videoUri.path)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }

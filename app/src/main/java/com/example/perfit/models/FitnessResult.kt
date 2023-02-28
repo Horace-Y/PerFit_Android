@@ -6,9 +6,11 @@ data class FitnessResult(
     @SerializedName("dateTime")
     val dateTime: String,
     @SerializedName("action")
-    val action: FitnessActions,
-    @SerializedName("score")
-    val score: Int,
+    val action: String,
+    @SerializedName("total")
+    val total: Int,
+    @SerializedName("scores")
+    val scores: HashMap<String, String>,
     @SerializedName("videoPath")
-    val video: String
+    val feedbackVideo: String
 )

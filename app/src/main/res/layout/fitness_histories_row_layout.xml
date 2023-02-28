@@ -50,7 +50,7 @@
                     android:id="@+id/text_action_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:text="@string/action"
                     android:textColor="@color/descColor"
                     android:textSize="16sp"
@@ -62,13 +62,11 @@
                     android:id="@+id/text_score_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="12dp"
                     android:text="@string/score"
                     android:textColor="@color/descColor"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/text_action_name"
                     app:layout_constraintTop_toBottomOf="@+id/text_action_name" />
 
@@ -100,12 +98,85 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:maxLines="5"
                     android:textColor="@color/descColor"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/text_score_title"
                     app:layout_constraintStart_toEndOf="@+id/text_score_title"
                     app:layout_constraintTop_toTopOf="@+id/text_score_title" />
+
+                <TextView
+                    android:id="@+id/text_breakdown_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/subscores"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/text_score_title"
+                    app:layout_constraintTop_toBottomOf="@+id/text_score_title" />
+
+                <TextView
+                    android:id="@+id/text_subscore_title_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@+id/text_breakdown_title"
+                    app:layout_constraintTop_toBottomOf="@+id/text_breakdown_title" />
+
+                <TextView
+                    android:id="@+id/text_subscore_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/text_subscore_title_1"
+                    app:layout_constraintTop_toTopOf="@+id/text_subscore_title_1" />
+
+                <TextView
+                    android:id="@+id/text_subscore_title_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@+id/text_subscore_title_1"
+                    app:layout_constraintTop_toBottomOf="@+id/text_subscore_title_1" />
+
+                <TextView
+                    android:id="@+id/text_subscore_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/text_subscore_title_2"
+                    app:layout_constraintTop_toTopOf="@+id/text_subscore_title_2" />
+
+                <TextView
+                    android:id="@+id/text_subscore_title_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/text_subscore_title_2"
+                    app:layout_constraintTop_toBottomOf="@+id/text_subscore_title_2" />
+
+                <TextView
+                    android:id="@+id/text_subscore_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/descColor"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@+id/text_subscore_title_3"
+                    app:layout_constraintTop_toTopOf="@+id/text_subscore_title_3" />
 
                 <Button
                     android:id="@+id/button_view_feedback"

@@ -79,9 +79,9 @@ class MainViewModel @Inject constructor(
     /** ROOM DATABASE */
     val readResults: LiveData<List<FitnessResultEntity>> = repository.local.readResults().asLiveData()
 
-    fun offlineCacheResult(fitnessActions: FitnessActions, score: Int, video: String){
-        val fitnessResult = FitnessResult(SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US)
-            .format(System.currentTimeMillis()), fitnessActions, score, video)
+    fun offlineCacheResult(fitnessAction: FitnessActions, feedback: FitnessFeedback, video: String){
+        val fitnessResult = FitnessResult(SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", Locale.US).format(System.currentTimeMillis()),
+            fitnessAction.name, feedback.total, feedback.scores, video)
         val fitnessResultEntity = FitnessResultEntity(fitnessResult)
         addLocalResult(fitnessResultEntity)
     }

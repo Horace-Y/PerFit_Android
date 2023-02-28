@@ -20,8 +20,17 @@ class FitnessResultActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // display feedback score and video
-        binding.textScore.text = intent.getStringExtra("score")
+        // total score and breakdowns
+        binding.textScore.text = intent.getStringExtra("total")
+        val subscores = (intent.getSerializableExtra("scores") as HashMap<String, String>).toList()
+        binding.textSubscoreTitle1.text = subscores[0].first
+        binding.textSubscore1.text = subscores[0].second
+        binding.textSubscoreTitle2.text = subscores[1].first
+        binding.textSubscore2.text = subscores[1].second
+        binding.textSubscoreTitle3.text = subscores[2].first
+        binding.textSubscore3.text = subscores[2].second
+
+        // feedback video
         val mediaController = MediaController(this).apply {
             setAnchorView(binding.videoFeedback)
         }
